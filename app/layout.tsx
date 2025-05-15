@@ -15,8 +15,61 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Working Tuner",
-  description: "A professional tuner application",
+  title: {
+    default: "Working Tuner",
+    template: "%s | Working Tuner"
+  },
+  description: "A professional tuner application for musicians and audio engineers. Tune your instruments with precision and ease.",
+  keywords: ["tuner", "music", "audio", "instrument tuning", "professional tuner", "musician tools"],
+  authors: [{ name: "Working Tuner Team" }],
+  creator: "Working Tuner",
+  publisher: "Working Tuner",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  metadataBase: new URL('https://workingtuner.com'),
+  alternates: {
+    canonical: '/',
+  },
+  openGraph: {
+    title: "Working Tuner",
+    description: "A professional tuner application for musicians and audio engineers",
+    url: 'https://workingtuner.com',
+    siteName: 'Working Tuner',
+    images: [
+      {
+        url: '/og-image.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Working Tuner',
+      },
+    ],
+    locale: 'en_US',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: "Working Tuner",
+    description: "A professional tuner application for musicians and audio engineers",
+    images: ['/og-image.jpg'],
+    creator: '@workingtuner',
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  verification: {
+    google: 'REPLACE_WITH_YOUR_VERIFICATION_CODE',
+  },
 };
 
 export default function RootLayout({
