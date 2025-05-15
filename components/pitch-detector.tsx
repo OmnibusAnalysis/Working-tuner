@@ -3,63 +3,83 @@
 import { useEffect, useRef } from "react"
 
 interface PitchDetectorProps {
-  audioContext: AudioContext
-  stream: MediaStream
   onPitchDetected: (frequency: number) => void
 }
 
-export function PitchDetector({ audioContext, stream, onPitchDetected }: PitchDetectorProps) {
+export function PitchDetector({ onPitchDetected }: PitchDetectorProps) {
   const analyserRef = useRef<AnalyserNode | null>(null)
   const sourceRef = useRef<MediaStreamAudioSourceNode | null>(null)
   const rafIdRef = useRef<number | null>(null)
   const bufferRef = useRef<Float32Array | null>(null)
   const bufferLengthRef = useRef<number>(2048)
+  const audioContextRef = useRef<AudioContext | null>(null)
+  const streamRef = useRef<MediaStream | null>(null)
 
   useEffect(() => {
-    try {
-      // Set up audio nodes
-      sourceRef.current = audioContext.createMediaStreamSource(stream)
-      analyserRef.current = audioContext.createAnalyser()
+    const setupAudio = async () => {
+      try {
+        // Get microphone access
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+        streamRef.current = stream
 
-      // Configure analyzer
-      analyserRef.current.fftSize = 2048
-      bufferLengthRef.current = analyserRef.current.fftSize
-      bufferRef.current = new Float32Array(bufferLengthRef.current)
+        // Create audio context
+        const audioContext = new (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)()
+        audioContextRef.current = audioContext
 
-      // Connect nodes
-      sourceRef.current.connect(analyserRef.current)
+        // Set up audio nodes
+        sourceRef.current = audioContext.createMediaStreamSource(stream)
+        analyserRef.current = audioContext.createAnalyser()
 
-      // Start pitch detection
-      detectPitch()
+        // Configure analyzer
+        analyserRef.current.fftSize = 2048
+        bufferLengthRef.current = analyserRef.current.fftSize
+        bufferRef.current = new Float32Array(bufferLengthRef.current)
 
-      return () => {
-        // Clean up
-        if (rafIdRef.current) {
-          cancelAnimationFrame(rafIdRef.current)
-        }
+        // Connect nodes
+        sourceRef.current.connect(analyserRef.current)
 
-        if (sourceRef.current) {
-          sourceRef.current.disconnect()
-        }
-
-        if (analyserRef.current) {
-          analyserRef.current.disconnect()
-        }
+        // Start pitch detection
+        detectPitch()
+      } catch (error) {
+        console.error("Error setting up pitch detector:", error)
       }
-    } catch (error) {
-      console.error("Error setting up pitch detector:", error)
     }
-  }, [audioContext, stream, onPitchDetected])
+
+    setupAudio()
+
+    return () => {
+      // Clean up
+      if (rafIdRef.current) {
+        cancelAnimationFrame(rafIdRef.current)
+      }
+
+      if (sourceRef.current) {
+        sourceRef.current.disconnect()
+      }
+
+      if (analyserRef.current) {
+        analyserRef.current.disconnect()
+      }
+
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach(track => track.stop())
+      }
+
+      if (audioContextRef.current) {
+        audioContextRef.current.close()
+      }
+    }
+  }, [onPitchDetected])
 
   const detectPitch = () => {
     try {
-      if (!analyserRef.current || !bufferRef.current) return
+      if (!analyserRef.current || !bufferRef.current || !audioContextRef.current) return
 
       // Get time domain data
       analyserRef.current.getFloatTimeDomainData(bufferRef.current)
 
       // Use autocorrelation to find the fundamental frequency
-      const frequency = findFundamentalFrequency(bufferRef.current, audioContext.sampleRate)
+      const frequency = findFundamentalFrequency(bufferRef.current, audioContextRef.current.sampleRate)
 
       // If we found a valid frequency, report it
       if (frequency > 30 && frequency < 5000) {

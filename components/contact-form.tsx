@@ -53,7 +53,7 @@ export function ContactForm() {
   return (
     <div className="w-full max-w-md mx-auto p-8 bg-zinc-800/50 backdrop-blur-sm rounded-xl shadow-2xl border border-zinc-700/50">
       <h2 className="text-3xl font-bold text-zinc-100 mb-2">Contact Us</h2>
-      <p className="text-zinc-400 text-sm mb-8">We'd love to hear from you. Send us a message and we'll respond as soon as possible.</p>
+      <p className="text-zinc-400 text-sm mb-8">We&apos;d love to hear from you. Send us a message and we&apos;ll respond as soon as possible.</p>
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="space-y-2">
           <label htmlFor="name" className="block text-sm font-medium text-zinc-200">

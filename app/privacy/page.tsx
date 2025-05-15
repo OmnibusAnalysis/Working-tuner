@@ -26,7 +26,7 @@ export default function PrivacyPage() {
           <h2 className="text-2xl font-semibold text-zinc-100 mt-8">Information We Collect</h2>
           <p>
             <strong>Microphone Access:</strong> When you use the microphone feature for pitch detection, we access your
-            device's microphone only with your explicit permission. All audio processing happens directly in your
+            device&apos;s microphone only with your explicit permission. All audio processing happens directly in your
             browser. We do not record, store, or transmit any audio data to our servers.
           </p>
 
@@ -44,7 +44,7 @@ export default function PrivacyPage() {
 
           <h2 className="text-2xl font-semibold text-zinc-100 mt-8">Analytics Opt-Out</h2>
           <p>
-            You can opt out of analytics collection at any time. When you first visit Poly Tuner, you'll be asked for
+            You can opt out of analytics collection at any time. When you first visit Poly Tuner, you&apos;ll be asked for
             your consent to collect anonymous usage data. If you choose to opt out, no analytics data will be collected
             during your sessions. You can change your preference at any time in the application settings.
           </p>
@@ -70,7 +70,7 @@ export default function PrivacyPage() {
             We use Vercel Analytics for collecting anonymous usage data. Vercel Analytics is privacy-focused and does
             not use cookies or collect personally identifiable information. For more information, please see{" "}
             <a href="https://vercel.com/docs/analytics" className="text-green-500 hover:underline">
-              Vercel's Analytics documentation
+              Vercel&apos;s Analytics documentation
             </a>
             .
           </p>
@@ -78,7 +78,7 @@ export default function PrivacyPage() {
           <h2 className="text-2xl font-semibold text-zinc-100 mt-8">Changes to This Policy</h2>
           <p>
             We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new
-            Privacy Policy on this page and updating the "Last Updated" date.
+            Privacy Policy on this page and updating the &quot;Last Updated&quot; date.
           </p>
 
           <h2 className="text-2xl font-semibold text-zinc-100 mt-8">Contact Us</h2>

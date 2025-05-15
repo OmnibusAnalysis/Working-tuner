@@ -89,7 +89,7 @@ export function trackEvent(eventName: EventName, properties: EventProperties = {
 declare global {
   interface Window {
     va?: {
-      track: (eventName: string, properties?: Record<string, any>) => void
+      track: (eventName: string, properties?: Record<string, unknown>) => void
     }
   }
 }
