@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import emailjs from '@emailjs/browser';
 
 interface FormData {
   name: string;
@@ -23,19 +24,17 @@ export function ContactForm() {
     setErrorMessage('');
 
     try {
-      const response = await fetch('/api/contact', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      await emailjs.send(
+        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
+        process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
+        {
+          from_name: formData.name,
+          from_email: formData.email,
+          message: formData.message,
+          to_email: process.env.CONTACT_EMAIL,
         },
-        body: JSON.stringify(formData),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to send message');
-      }
+        process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY
+      );
 
       setStatus('success');
       setFormData({ name: '', email: '', message: '' });
