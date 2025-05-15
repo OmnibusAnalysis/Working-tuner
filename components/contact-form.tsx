@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import emailjs from '@emailjs/browser';
 
 interface FormData {
@@ -18,27 +18,33 @@ export function ContactForm() {
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState<string>('');
 
+  useEffect(() => {
+    emailjs.init(process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!);
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus('loading');
     setErrorMessage('');
 
     try {
+      const templateParams = {
+        from_name: formData.name,
+        from_email: formData.email,
+        message: formData.message,
+        to_email: process.env.CONTACT_EMAIL,
+      };
+
       await emailjs.send(
         process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
         process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
-        {
-          from_name: formData.name,
-          from_email: formData.email,
-          message: formData.message,
-          to_email: process.env.CONTACT_EMAIL,
-        },
-        process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY
+        templateParams
       );
 
       setStatus('success');
       setFormData({ name: '', email: '', message: '' });
     } catch (error) {
+      console.error('EmailJS error:', error);
       setStatus('error');
       setErrorMessage(error instanceof Error ? error.message : 'Failed to send message');
     }
