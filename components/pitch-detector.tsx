@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useCallback } from "react"
 
 interface PitchDetectorProps {
   onPitchDetected: (frequency: number) => void
@@ -14,6 +14,30 @@ export function PitchDetector({ onPitchDetected }: PitchDetectorProps) {
   const bufferLengthRef = useRef<number>(2048)
   const audioContextRef = useRef<AudioContext | null>(null)
   const streamRef = useRef<MediaStream | null>(null)
+
+  const detectPitch = useCallback(() => {
+    try {
+      if (!analyserRef.current || !bufferRef.current || !audioContextRef.current) return
+
+      // Get time domain data
+      analyserRef.current.getFloatTimeDomainData(bufferRef.current)
+
+      // Use autocorrelation to find the fundamental frequency
+      const frequency = findFundamentalFrequency(bufferRef.current, audioContextRef.current.sampleRate)
+
+      // If we found a valid frequency, report it
+      if (frequency > 30 && frequency < 5000) {
+        onPitchDetected(frequency)
+      }
+
+      // Continue detection loop
+      rafIdRef.current = requestAnimationFrame(detectPitch)
+    } catch (error) {
+      console.error("Error detecting pitch:", error)
+      // Continue detection loop even if there was an error
+      rafIdRef.current = requestAnimationFrame(detectPitch)
+    }
+  }, [onPitchDetected])
 
   useEffect(() => {
     const setupAudio = async () => {
@@ -69,31 +93,7 @@ export function PitchDetector({ onPitchDetected }: PitchDetectorProps) {
         audioContextRef.current.close()
       }
     }
-  }, [onPitchDetected])
-
-  const detectPitch = () => {
-    try {
-      if (!analyserRef.current || !bufferRef.current || !audioContextRef.current) return
-
-      // Get time domain data
-      analyserRef.current.getFloatTimeDomainData(bufferRef.current)
-
-      // Use autocorrelation to find the fundamental frequency
-      const frequency = findFundamentalFrequency(bufferRef.current, audioContextRef.current.sampleRate)
-
-      // If we found a valid frequency, report it
-      if (frequency > 30 && frequency < 5000) {
-        onPitchDetected(frequency)
-      }
-
-      // Continue detection loop
-      rafIdRef.current = requestAnimationFrame(detectPitch)
-    } catch (error) {
-      console.error("Error detecting pitch:", error)
-      // Continue detection loop even if there was an error
-      rafIdRef.current = requestAnimationFrame(detectPitch)
-    }
-  }
+  }, [onPitchDetected, detectPitch])
 
   // Autocorrelation function to find fundamental frequency
   const findFundamentalFrequency = (buffer: Float32Array, sampleRate: number): number => {

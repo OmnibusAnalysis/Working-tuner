@@ -1,5 +1,4 @@
 import { Tuner } from "@/components/tuner"
-import { ContactForm } from "@/components/contact-form"
 
 export default function Home() {
   return (

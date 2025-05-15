@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef, useEffect } from "react"
+import { useState, useRef, useEffect, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -233,7 +233,7 @@ export function Tuner() {
     }
   }
 
-  const stopMicrophone = () => {
+  const stopMicrophone = useCallback(() => {
     try {
       if (microphoneStream.current) {
         microphoneStream.current.getTracks().forEach(track => track.stop())
@@ -245,7 +245,7 @@ export function Tuner() {
     } catch (error) {
       console.error("Error stopping microphone:", error)
     }
-  }
+  }, [])
 
   const handlePitchDetected = (frequency: number) => {
     try {
@@ -302,14 +302,6 @@ export function Tuner() {
     if (gainNode.current) {
       gainNode.current.gain.setValueAtTime(audioMuted ? 0.5 : 0, audioContext.current?.currentTime || 0)
     }
-  }
-
-  const simulateStrum = () => {
-    const currentTuning = tunings[instrument as keyof typeof tunings][tuningOption as keyof typeof tunings.guitar]
-    for (let i = 0; i < currentTuning.length; i++) {
-      setTimeout(() => playTone(i), i * 100)
-    }
-    setTimeout(() => stopTone(), currentTuning.length * 100)
   }
 
   const getTuningOptions = () => {

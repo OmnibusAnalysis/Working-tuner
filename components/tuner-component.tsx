@@ -1,13 +1,10 @@
 "use client"
 
-import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Guitar, Music } from "lucide-react"
 
 export default function TunerComponent() {
-  const [instrument, setInstrument] = useState("guitar")
-
   return (
     <Card className="border-none bg-zinc-800 shadow-xl overflow-hidden">
       <CardContent className="p-6">
