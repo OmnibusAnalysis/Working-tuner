@@ -331,7 +331,7 @@ export function Tuner() {
               <div className="flex items-center space-x-2">
                 <Guitar className="w-5 h-5 text-zinc-400" />
                 <Select value={instrument} onValueChange={handleInstrumentChange}>
-                  <SelectTrigger className="w-[120px] bg-zinc-900/50 border-zinc-700">
+                  <SelectTrigger className="w-[120px] bg-zinc-800 border-zinc-600 text-zinc-100 hover:bg-zinc-700 hover:border-zinc-500 transition-colors">
                     <SelectValue placeholder="Instrument" />
                   </SelectTrigger>
                   <SelectContent>
@@ -346,7 +346,7 @@ export function Tuner() {
               <div className="flex items-center space-x-2">
                 <Music className="w-5 h-5 text-zinc-400" />
                 <Select value={tuningOption} onValueChange={handleTuningChange}>
-                  <SelectTrigger className="w-[120px] bg-zinc-900/50 border-zinc-700">
+                  <SelectTrigger className="w-[120px] bg-zinc-800 border-zinc-600 text-zinc-100 hover:bg-zinc-700 hover:border-zinc-500 transition-colors">
                     <SelectValue placeholder="Tuning" />
                   </SelectTrigger>
                   <SelectContent>
