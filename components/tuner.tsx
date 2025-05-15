@@ -11,41 +11,55 @@ import { Guitar, Music, Mic, MicOff, Volume2, VolumeX } from "lucide-react"
 import { PitchDetector } from "./pitch-detector"
 
 // Define instrument tunings
+const guitarTunings = {
+  standard: ["E2", "A2", "D3", "G3", "B3", "E4"],
+  halfStepDown: ["Eb2", "Ab2", "Db3", "Gb3", "Bb3", "Eb4"],
+  fullStepDown: ["D2", "G2", "C3", "F3", "A3", "D4"],
+  stepAndHalfDown: ["Db2", "Gb2", "B2", "E3", "Ab3", "Db4"],
+  dropD: ["D2", "A2", "D3", "G3", "B3", "E4"],
+  openG: ["D2", "G2", "D3", "G3", "B3", "D4"],
+  openD: ["D2", "A2", "D3", "F#3", "A3", "D4"],
+  dadgad: ["D2", "A2", "D3", "G3", "A3", "D4"],
+} as const
+
+const bassTunings = {
+  standard: ["E1", "A1", "D2", "G2"],
+  halfStepDown: ["Eb1", "Ab1", "Db2", "Gb2"],
+  fullStepDown: ["D1", "G1", "C2", "F2"],
+  stepAndHalfDown: ["Db1", "Gb1", "B1", "E2"],
+  dropD: ["D1", "A1", "D2", "G2"],
+  fiveString: ["B0", "E1", "A1", "D2", "G2"],
+} as const
+
+const ukuleleTunings = {
+  standard: ["G4", "C4", "E4", "A4"],
+  baritone: ["D3", "G3", "B3", "E4"],
+  dADF: ["D4", "A4", "D4", "F4"],
+} as const
+
+const banjoTunings = {
+  standard: ["G4", "D3", "G3", "B3", "D4"],
+  openG: ["G4", "D3", "G3", "B3", "D4"],
+  doubleC: ["G4", "C3", "G3", "C4", "D4"],
+} as const
+
+const mandolinTunings = {
+  standard: ["G3", "D4", "A4", "E5"],
+  openG: ["G3", "D4", "G4", "B4"],
+  crossTuning: ["A3", "E4", "A4", "E5"],
+} as const
+
 const tunings = {
-  guitar: {
-    standard: ["E2", "A2", "D3", "G3", "B3", "E4"],
-    halfStepDown: ["Eb2", "Ab2", "Db3", "Gb3", "Bb3", "Eb4"],
-    fullStepDown: ["D2", "G2", "C3", "F3", "A3", "D4"],
-    stepAndHalfDown: ["Db2", "Gb2", "B2", "E3", "Ab3", "Db4"],
-    dropD: ["D2", "A2", "D3", "G3", "B3", "E4"],
-    openG: ["D2", "G2", "D3", "G3", "B3", "D4"],
-    openD: ["D2", "A2", "D3", "F#3", "A3", "D4"],
-    dadgad: ["D2", "A2", "D3", "G3", "A3", "D4"],
-  },
-  bass: {
-    standard: ["E1", "A1", "D2", "G2"],
-    halfStepDown: ["Eb1", "Ab1", "Db2", "Gb2"],
-    fullStepDown: ["D1", "G1", "C2", "F2"],
-    stepAndHalfDown: ["Db1", "Gb1", "B1", "E2"],
-    dropD: ["D1", "A1", "D2", "G2"],
-    fiveString: ["B0", "E1", "A1", "D2", "G2"],
-  },
-  ukulele: {
-    standard: ["G4", "C4", "E4", "A4"],
-    baritone: ["D3", "G3", "B3", "E4"],
-    dADF: ["D4", "A4", "D4", "F4"],
-  },
-  banjo: {
-    standard: ["G4", "D3", "G3", "B3", "D4"],
-    openG: ["G4", "D3", "G3", "B3", "D4"],
-    doubleC: ["G4", "C3", "G3", "C4", "D4"],
-  },
-  mandolin: {
-    standard: ["G3", "D4", "A4", "E5"],
-    openG: ["G3", "D4", "G4", "B4"],
-    crossTuning: ["A3", "E4", "A4", "E5"],
-  },
-}
+  guitar: guitarTunings,
+  bass: bassTunings,
+  ukulele: ukuleleTunings,
+  banjo: banjoTunings,
+  mandolin: mandolinTunings,
+} as const
+
+type Instrument = keyof typeof tunings
+
+type TuningOption<T extends Instrument> = keyof (typeof tunings)[T]
 
 // Note frequencies in Hz (A4 = 440Hz as reference)
 const getFrequency = (note: string, referenceFreq = 440): number => {
@@ -97,7 +111,7 @@ const findClosestNote = (frequency: number, referenceFreq = 440): { note: string
 }
 
 // Find the closest string to a given note
-const findClosestString = (note: string, tuning: string[]): number => {
+const findClosestString = (note: string, tuning: readonly string[]): number => {
   try {
     const noteFreq = getFrequency(note)
 
@@ -122,8 +136,8 @@ const findClosestString = (note: string, tuning: string[]): number => {
 }
 
 export function Tuner() {
-  const [instrument, setInstrument] = useState("guitar")
-  const [tuningOption, setTuningOption] = useState("standard")
+  const [instrument, setInstrument] = useState<Instrument>("guitar")
+  const [tuningOption, setTuningOption] = useState<TuningOption<typeof instrument>>("standard")
   const [referenceFreq, setReferenceFreq] = useState(440)
   const [currentString, setCurrentString] = useState(-1)
   const [isPlaying, setIsPlaying] = useState(false)
@@ -138,9 +152,23 @@ export function Tuner() {
   const gainNode = useRef<GainNode | null>(null)
   const microphoneStream = useRef<MediaStream | null>(null)
 
+  const stopMicrophone = useCallback(() => {
+    try {
+      if (microphoneStream.current) {
+        microphoneStream.current.getTracks().forEach(track => track.stop())
+        microphoneStream.current = null
+      }
+      setMicrophoneActive(false)
+      setDetectedNote(null)
+      setDetectedCents(0)
+    } catch (error) {
+      console.error("Error stopping microphone:", error)
+    }
+  }, [])
+
   // Initialize tuning status array based on current instrument/tuning
   useEffect(() => {
-    const currentTuning = tunings[instrument as keyof typeof tunings][tuningOption as keyof typeof tunings.guitar]
+    const currentTuning = tunings[instrument as Instrument][tuningOption as TuningOption<typeof instrument>]
     setTuningStatus(Array(currentTuning.length).fill("none"))
   }, [instrument, tuningOption])
 
@@ -168,7 +196,7 @@ export function Tuner() {
         stopTone()
       }
 
-      const currentTuning = tunings[instrument as keyof typeof tunings][tuningOption as keyof typeof tunings.guitar]
+      const currentTuning = tunings[instrument as Instrument][tuningOption as TuningOption<typeof instrument>]
       if (index >= currentTuning.length) return
 
       // Create audio context if it doesn't exist
@@ -233,20 +261,6 @@ export function Tuner() {
     }
   }
 
-  const stopMicrophone = useCallback(() => {
-    try {
-      if (microphoneStream.current) {
-        microphoneStream.current.getTracks().forEach(track => track.stop())
-        microphoneStream.current = null
-      }
-      setMicrophoneActive(false)
-      setDetectedNote(null)
-      setDetectedCents(0)
-    } catch (error) {
-      console.error("Error stopping microphone:", error)
-    }
-  }, [])
-
   const handlePitchDetected = (frequency: number) => {
     try {
       const { note, cents } = findClosestNote(frequency, referenceFreq)
@@ -254,7 +268,7 @@ export function Tuner() {
       setDetectedCents(cents)
 
       if (tuningMode === "poly") {
-        const currentTuning = tunings[instrument as keyof typeof tunings][tuningOption as keyof typeof tunings.guitar]
+        const currentTuning = tunings[instrument as Instrument][tuningOption as TuningOption<typeof instrument>]
         const stringIndex = findClosestString(note, currentTuning)
         const stringNote = currentTuning[stringIndex]
         const stringFreq = getFrequency(stringNote, referenceFreq)
@@ -283,18 +297,18 @@ export function Tuner() {
 
   const handleTuningModeChange = (value: boolean) => {
     setTuningMode(value ? "chromatic" : "poly")
-    setTuningStatus(Array(tunings[instrument as keyof typeof tunings][tuningOption as keyof typeof tunings.guitar].length).fill("none"))
+    setTuningStatus(Array(tunings[instrument as Instrument][tuningOption as TuningOption<typeof instrument>].length).fill("none"))
   }
 
-  const handleInstrumentChange = (value: string) => {
+  const handleInstrumentChange = (value: Instrument) => {
     setInstrument(value)
     setTuningOption("standard")
-    setTuningStatus(Array(tunings[value as keyof typeof tunings].standard.length).fill("none"))
+    setTuningStatus(Array(tunings[value as Instrument].standard.length).fill("none"))
   }
 
-  const handleTuningChange = (value: string) => {
+  const handleTuningChange = (value: TuningOption<typeof instrument>) => {
     setTuningOption(value)
-    setTuningStatus(Array(tunings[instrument as keyof typeof tunings][value as keyof typeof tunings.guitar].length).fill("none"))
+    setTuningStatus(Array(tunings[instrument as Instrument][value as TuningOption<typeof instrument>].length).fill("none"))
   }
 
   const toggleAudioMuted = () => {
@@ -305,7 +319,7 @@ export function Tuner() {
   }
 
   const getTuningOptions = () => {
-    return Object.keys(tunings[instrument as keyof typeof tunings])
+    return Object.keys(tunings[instrument as Instrument])
   }
 
   return (
@@ -413,14 +427,14 @@ export function Tuner() {
             )}
 
             <PolytuneDisplay
-              instrument={instrument}
-              tuningOption={tuningOption}
-              tuningMode={tuningMode}
+              tuning={tunings[instrument as Instrument][tuningOption as TuningOption<typeof instrument>]}
               tuningStatus={tuningStatus}
+              currentString={currentString}
+              isPlaying={isPlaying}
+              mode={tuningMode}
+              onStringClick={handlePolytuneClick}
               detectedNote={detectedNote}
               detectedCents={detectedCents}
-              onStringClick={handlePolytuneClick}
-              currentString={currentString}
             />
           </div>
         </CardContent>

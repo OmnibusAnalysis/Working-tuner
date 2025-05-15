@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { cn } from "@/lib/utils"
 
 interface PolytuneDisplayProps {
-  tuning: string[]
+  tuning: readonly string[]
   tuningStatus: ("flat" | "in-tune" | "sharp" | "none")[]
   currentString: number
   isPlaying: boolean
