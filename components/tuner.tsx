@@ -388,17 +388,17 @@ export function Tuner() {
                 variant="outline"
                 size="sm"
                 onClick={microphoneActive ? stopMicrophone : startMicrophone}
-                className="flex items-center space-x-2"
+                className="flex items-center space-x-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-100 border-zinc-600 hover:border-zinc-500 transition-colors"
               >
                 {microphoneActive ? (
                   <>
                     <MicOff className="w-4 h-4" />
-                    <span>Stop Microphone</span>
+                    <span className="font-medium">Stop Microphone</span>
                   </>
                 ) : (
                   <>
                     <Mic className="w-4 h-4" />
-                    <span>Start Microphone</span>
+                    <span className="font-medium">Start Microphone</span>
                   </>
                 )}
               </Button>
@@ -406,17 +406,17 @@ export function Tuner() {
                 variant="outline"
                 size="sm"
                 onClick={toggleAudioMuted}
-                className="flex items-center space-x-2"
+                className="flex items-center space-x-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-100 border-zinc-600 hover:border-zinc-500 transition-colors"
               >
                 {audioMuted ? (
                   <>
                     <VolumeX className="w-4 h-4" />
-                    <span>Unmute</span>
+                    <span className="font-medium">Unmute</span>
                   </>
                 ) : (
                   <>
                     <Volume2 className="w-4 h-4" />
-                    <span>Mute</span>
+                    <span className="font-medium">Mute</span>
                   </>
                 )}
               </Button>
