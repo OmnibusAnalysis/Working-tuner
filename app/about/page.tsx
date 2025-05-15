@@ -9,8 +9,8 @@ export const metadata = {
 
 export default function AboutPage() {
   return (
-    <main className="min-h-screen flex flex-col items-center p-4 bg-zinc-900">
-      <div className="max-w-2xl w-full py-12">
+    <main className="min-h-screen flex flex-col items-center bg-zinc-900 pt-24 pb-12 px-4">
+      <div className="max-w-2xl w-full">
         <h1 className="text-4xl font-bold text-center mb-8 text-zinc-100">About Poly Tuner</h1>
 
         <div className="space-y-6 text-zinc-300">
@@ -49,11 +49,16 @@ export default function AboutPage() {
           </p>
 
           <div className="flex justify-center mt-12">
-            <Button asChild className="bg-green-600 hover:bg-green-700">
+            <Button asChild className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700">
               <Link href="/">Try Poly Tuner Now</Link>
             </Button>
           </div>
         </div>
+      </div>
+      <div className="mt-12 pt-6 border-t border-zinc-800">
+        <p className="text-center text-zinc-500 text-sm">
+          © {new Date().getFullYear()} SpudPug Development. All rights reserved.
+        </p>
       </div>
     </main>
   )
