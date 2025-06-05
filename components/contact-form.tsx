@@ -19,7 +19,10 @@ export function ContactForm() {
   const [errorMessage, setErrorMessage] = useState<string>('');
 
   useEffect(() => {
-    emailjs.init(process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!);
+    // Initialize EmailJS with your public key
+    emailjs.init({
+      publicKey:  'F8g0vUxOGwzsdC7B9', 
+    });
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -32,12 +35,12 @@ export function ContactForm() {
         from_name: formData.name,
         from_email: formData.email,
         message: formData.message,
-        to_email: process.env.CONTACT_EMAIL,
+        to_email: 'cmichaeldev@gmail.com', 
       };
 
       await emailjs.send(
-        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
-        process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
+        'service_5omexnt', // Replace with your actual EmailJS service ID
+        'template_qfy9xxqD', // Replace with your actual EmailJS template ID
         templateParams
       );
 
@@ -150,4 +153,4 @@ export function ContactForm() {
       </div>
     </div>
   );
-} 
+}
