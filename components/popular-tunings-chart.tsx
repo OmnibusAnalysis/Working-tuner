@@ -1,7 +1,5 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
-
 export function PopularTuningsChart() {
   // In a real application, this data would come from an API or database
   const tuningData = [
