@@ -1,17 +1,36 @@
-import { ContactForm } from '@/components/contact-form';
+import { ContactForm } from "@/components/contact-form"
+
+export const metadata = {
+  title: "Contact Us | Working Tuner",
+  description:
+    "Contact the Working Tuner team with questions, feedback, or suggestions. We'd love to hear from you!",
+}
 
 export default function ContactPage() {
   return (
-    <main className="min-h-screen bg-zinc-900 pt-24 pb-12">
-      <div className="container mx-auto px-4">
-        <h1 className="text-3xl font-bold text-center text-zinc-100 mb-8">Contact Us</h1>
-        <p className="text-center text-zinc-400 mb-8 max-w-2xl mx-auto">
-          Have questions or feedback? We&apos;d love to hear from you. Fill out the form below and we&apos;ll get back to you as soon as possible.
-        </p>
-        <div className="max-w-md mx-auto bg-zinc-800 rounded-lg p-6">
-          <ContactForm />
-        </div>
+    <main className="min-h-screen flex flex-col items-center p-4 bg-zinc-900">
+      <div className="max-w-2xl w-full py-12">
+        <header>
+          <h1 className="text-4xl font-bold text-center mb-8 text-zinc-100">Contact Us</h1>
+        </header>
+        
+        <section className="space-y-6 text-zinc-300">
+          <p className="text-center">
+            Have questions, feedback, or suggestions about Working Tuner? We'd love to hear from you! Fill out the form
+            below and we'll get back to you as soon as possible.
+          </p>
+          
+          <div className="mt-8">
+            <ContactForm />
+          </div>
+        </section>
       </div>
+      
+      <footer className="mt-12 pt-6 border-t border-zinc-800 w-full">
+        <p className="text-center text-zinc-500 text-sm">
+          © {new Date().getFullYear()} SpudPug Development. All rights reserved.
+        </p>
+      </footer>
     </main>
-  );
-} 
+  )
+}

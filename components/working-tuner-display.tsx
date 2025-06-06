@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import { cn } from "@/lib/utils"
 
-interface PolytuneDisplayProps {
+interface WorkingTunerDisplayProps {
   tuning: readonly string[]
   tuningStatus: ("flat" | "in-tune" | "sharp" | "none")[]
   currentString: number
@@ -14,7 +14,7 @@ interface PolytuneDisplayProps {
   detectedCents?: number
 }
 
-export function PolytuneDisplay({
+export function WorkingTunerDisplay({
   tuning,
   tuningStatus,
   currentString,
@@ -23,7 +23,7 @@ export function PolytuneDisplay({
   onStringClick,
   detectedNote = null,
   detectedCents = 0,
-}: PolytuneDisplayProps) {
+}: WorkingTunerDisplayProps) {
   const [blinkState, setBlinkState] = useState(false)
 
   // Blink effect for active LEDs

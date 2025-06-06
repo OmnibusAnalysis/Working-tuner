@@ -3,6 +3,8 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { Navigation } from "@/components/navigation";
 import { Analytics } from "@vercel/analytics/react";
+import { JsonLd } from "@/components/json-ld";
+
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -68,7 +70,9 @@ export const metadata: Metadata = {
     },
   },
   verification: {
-    google: 'REPLACE_WITH_YOUR_VERIFICATION_CODE',
+    // Google Search Console verification completed via DNS verification
+    // DNS verification doesn't require a meta tag code in the HTML
+    google: '',
   },
 };
 
@@ -79,6 +83,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <JsonLd />
+      </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <Navigation />
         {children}

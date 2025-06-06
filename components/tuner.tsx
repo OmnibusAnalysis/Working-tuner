@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
-import { PolytuneDisplay } from "./polytune-display"
+import { WorkingTunerDisplay } from "./working-tuner-display"
 import { Guitar, Music, Mic, MicOff, Volume2, VolumeX } from "lucide-react"
 import { PitchDetector } from "./pitch-detector"
 
@@ -287,7 +287,7 @@ export function Tuner() {
     setReferenceFreq(value ? 432 : 440)
   }
 
-  const handlePolytuneClick = (index: number) => {
+  const handleTunerClick = (index: number) => {
     if (isPlaying && currentString === index) {
       stopTone()
     } else {
@@ -426,13 +426,13 @@ export function Tuner() {
               <PitchDetector onPitchDetected={handlePitchDetected} />
             )}
 
-            <PolytuneDisplay
+            <WorkingTunerDisplay
               tuning={tunings[instrument as Instrument][tuningOption as TuningOption<typeof instrument>]}
               tuningStatus={tuningStatus}
               currentString={currentString}
               isPlaying={isPlaying}
               mode={tuningMode}
-              onStringClick={handlePolytuneClick}
+              onStringClick={handleTunerClick}
               detectedNote={detectedNote}
               detectedCents={detectedCents}
             />
